@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/evanbancroft/Projects/Work/app/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

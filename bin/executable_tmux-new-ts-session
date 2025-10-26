@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# Check if we're already in a tmux session
+if [ -z "$TMUX" ]; then
+    echo "Error: You must be in a tmux session to run this script."
+    exit 1
+fi
+
+# Get the current session and window
+current_session=$(tmux display-message -p '#S')
+current_window=$(tmux display-message -p '#I')
+
+# Create a new window for development
+tmux new-window -n "servers"
+
+# Run npm run dev in the first pane
+tmux send-keys "npm run dev" C-m
+
+# Split the window into two panes
+tmux split-window -h
+
+tmux select-window -t "$current_window"
+
+# Open neovim in the second pane
+tmux send-keys -t 1 "nvim" C-m
+

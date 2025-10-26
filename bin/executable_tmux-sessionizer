@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+# Function to run repository-specific scripts
+run_repo_script() {
+    local session_name=$1
+    local selected_dir=$2
+    local config_file="$HOME/.config/tmux/repo-scripts.conf"
+
+    # Create config directory if it doesn't exist
+    mkdir -p "$(dirname "$config_file")"
+
+    # Only proceed if config file exists
+    if [[ -f "$config_file" ]]; then
+        while IFS=':' read -r repo_path script_cmd; do
+            # Skip empty lines and comments
+            [[ -z "$repo_path" || "$repo_path" =~ ^[[:space:]]*# ]] && continue
+
+            if [[ "$selected_dir" == "$repo_path" ]]; then
+                tmux send-keys -t "$session_name" "$script_cmd" Enter
+                break
+            fi
+        done <"$config_file"
+    fi
+}
+
+if [[ $# -eq 1 ]]; then
+    selected=$1
+else
+    dirs=$(find -L ~/Projects/Work ~/Projects/Personal ~/.config -mindepth 1 -maxdepth 1 -type d)
+    selected=$(printf "%s\n%s\n%s\n%s" "$dirs" "$HOME/Documents/notes" "$HOME/build" "$HOME/.dotfiles" | fzf)
+fi
+
+if [[ -z $selected ]]; then
+    exit 0
+fi
+
+selected_name=$(basename "$selected" | tr . _)
+tmux_running=$(pgrep tmux)
+
+# OK - tmux is not running
+if [[ -z $tmux_running ]]; then
+    tmux new-session -s $selected_name -c "$selected"
+    run_repo_script "$selected_name" "$selected"
+    exit 0
+fi
+
+# OK - tmux is running but client is not attached, session with selected_name does not exist
+if [[ -z $TMUX ]] && ! tmux has-session -t=$selected_name 2>/dev/null; then
+    tmux new-session -s $selected_name -c "$selected"
+    run_repo_script "$selected_name" "$selected"
+    tmux a -t $selected_name
+    exit 0
+fi
+
+# OK - tmux is running but client is not attached, session with selected_name exists
+if [[ -z $TMUX ]] && tmux has-session -t=$selected_name 2>/dev/null; then
+    tmux a -t $selected_name
+    exit 0
+fi
+
+# OK - tmux is running and client is attached, session with selected_name does not exist
+if [[ ! -z $TMUX ]] && ! tmux has-session -t=$selected_name 2>/dev/null; then
+    tmux new-session -ds $selected_name -c "$selected"
+    run_repo_script "$selected_name" "$selected"
+    tmux switch-client -t $selected_name
+    exit 0
+fi
+
+# OK - tmux is running and client is attached, session with selected_name exists
+if [[ ! -z $TMUX ]] && tmux has-session -t=$selected_name 2>/dev/null; then
+    tmux switch-client -t $selected_name
+    exit 0
+fi
