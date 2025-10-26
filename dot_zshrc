@@ -98,12 +98,9 @@ zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
 
 # Aliases
 alias ls='ls -G'  # macOS BSD ls uses -G instead of --color
-alias dt='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-alias oo='cd $HOME/library/Mobile\ Documents/iCloud~md~obsidian/Documents/v2.0.1'
 alias cb="~/bin/coverage-tracker.sh baseline"
 alias cc="~/bin/coverage-tracker.sh check"
 alias cr="~/bin/coverage-tracker.sh reset"
-alias h2='$(npm prefix -s)/node_modules/.bin/shopify hydrogen'
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 
 
