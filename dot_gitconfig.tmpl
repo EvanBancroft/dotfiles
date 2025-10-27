@@ -1,0 +1,12 @@
+[user]
+name = EvanBancroft
+{{- if eq .chezmoi.hostname "Evans-MacBook-Pro" }}
+email = {{ onepasswordRead "op://personal/github/work_email" }}
+{{- end }}
+
+{{- if ne .chezmoi.hostname "Evans-MacBook-Pro" }}
+email = {{ onepasswordRead "op://personal/github/personal_email" }}
+{{- end }}
+
+[fetch]
+	prune = true
