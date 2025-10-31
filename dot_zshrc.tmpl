@@ -8,16 +8,21 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+{{- if eq .chezmoi.hostname "Evans-MacBook-Pro" }}
 # Initialize Homebrew (should be early to set up environment)
 eval "$(/opt/homebrew/bin/brew shellenv)"
+{{- end }}
 
 # PATH additions
 export PATH="$HOME/bin:$PATH"
 export PATH="$HOME/.rbenv/bin:$PATH"
 export PATH="$HOME/.spicetify:$PATH"
 export PATH="$HOME/.bun/bin:$PATH"
-export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
 export PATH="$HOME/.claude/local/claude:$PATH"
+
+{{- if eq .chezmoi.hostname "Evans-MacBook-Pro" }}
+export PATH="/opt/homebrew/opt/postgresql@17/bin:$PATH"
+{{- end }}
 
 
 
@@ -102,6 +107,7 @@ alias cb="~/bin/coverage-tracker.sh baseline"
 alias cc="~/bin/coverage-tracker.sh check"
 alias cr="~/bin/coverage-tracker.sh reset"
 alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
+alias claude="/Users/evanbancroft/.claude/local/claude"
 
 
 # Shell integrations
