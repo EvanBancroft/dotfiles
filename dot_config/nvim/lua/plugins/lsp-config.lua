@@ -46,10 +46,10 @@ return {
 			"hrsh7th/cmp-nvim-lsp",
 		},
 		config = function(_, opts)
-			local lspconfig = require("lspconfig")
-			lspconfig.handlers = {
-				["tsserver"] = function() end, -- handled by typescript_tools.lua
-			}
+			-- local lspconfig = vim.lsp.config()
+			-- lspconfig.handlers = {
+			-- 	["tsserver"] = function() end, -- handled by typescript_tools.lua
+			-- }
 
 			vim.api.nvim_create_autocmd("LspAttach", {
 				callback = function(event)
@@ -115,7 +115,8 @@ return {
 				-- passing config.capabilities to blink.cmp merges with the capabilities in your
 				-- `opts[server].capabilities, if you've defined it
 				config.capabilities = require("blink.cmp").get_lsp_capabilities(config.capabilities)
-				lspconfig[server].setup(config)
+				vim.lsp.config(server, config)
+				vim.lsp.enable(server)
 			end
 
 			require("mason").setup()
@@ -145,7 +146,8 @@ return {
 						-- by the server configuration above. Useful when disabling
 						-- certain features of an LSP (for example, turning off formatting for ts_ls)
 						server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-						require("lspconfig")[server_name].setup(server)
+						vim.lsp.config(server_name, server)
+						vim.lsp.enable(server_name)
 					end,
 				},
 			})

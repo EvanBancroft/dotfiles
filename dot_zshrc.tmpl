@@ -127,3 +127,5 @@ export BUN_INSTALL="$HOME/.bun"
 # Local bin environment
 [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
 
+# CONSTANTS
+export PGSYNC_CONNECT_STRING={{ onepasswordRead "op://personal/soundstripe/staging_db" }}

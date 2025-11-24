@@ -21,7 +21,7 @@ return {
 				desc = "Grep current buffer",
 			},
 			{ "<leader>ff", "<cmd>FzfLua files<cr>", desc = "Find files" },
-			{ "<leader>fg", "<cmd>FzfLua live_grep_glob<cr>", desc = "Grep" },
+			{ "<leader>fg", "<cmd>FzfLua live_grep<cr>", desc = "Grep" },
 			{ "<leader>fg", "<cmd>FzfLua grep_visual<cr>", desc = "Grep", mode = "x" },
 			{ "<leader>fc", "<cmd>FzfLua highlights<cr>", desc = "Highlights" },
 			{ "<leader>fd", "<cmd>FzfLua lsp_document_diagnostics<cr>", desc = "Document diagnostics" },
