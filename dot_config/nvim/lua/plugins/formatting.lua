@@ -16,6 +16,13 @@ return {
 				ruby = { "rubocop" },
 			}
 
+			lint.linters.rubocop = {
+				cmd = "bundle",
+				args = { "exec", "rubocop", "--format", "json", "--stdin", function() return vim.api.nvim_buf_get_name(0) end },
+				stdin = true,
+				parser = lint.linters.rubocop.parser,
+			}
+
 			local lint_augroup = vim.api.nvim_create_augroup("lint", { clear = true })
 
 			vim.api.nvim_create_autocmd({ "BufEnter", "BufWritePost", "InsertLeave" }, {
@@ -70,14 +77,10 @@ return {
 				shfmt = {
 					prepend_args = { "-i", "2" },
 				},
-				-- rubocop = {
-				-- 	command = "bundle",
-				-- 	args = { "exec", "rubocop", "--no-server", "-a", "$FILENAME" },
-				-- 	stdin = false,
-				-- 	cwd = function(ctx)
-				-- 		return vim.fn.fnamemodify(ctx.filename, ":h")
-				-- 	end,
-				-- },
+				rubocop = {
+					command = "bundle",
+					prepend_args = { "exec", "rubocop" },
+				},
 			},
 		},
 		init = function()

@@ -133,7 +133,6 @@ return {
 				"bash-language-server",
 				"astro-language-server",
 				"eslint_d",
-				"rubocop",
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
