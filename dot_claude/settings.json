@@ -1,7 +1,74 @@
 {
+  "alwaysThinkingEnabled": true,
+  "autoMemoryEnabled": false,
+  "editorMode": "vim",
+  "enabledPlugins": {
+    "asana@claude-plugins-official": true,
+    "ruby-lsp@claude-plugins-official": true
+  },
+  "feedbackDrafts": "off",
+  "hooks": {
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "command": "workmux agent-event claude",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "command": "workmux agent-event claude",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "workmux agent-event claude",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "workmux agent-event claude",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ]
+  },
+  "idleCompaction": false,
+  "model": "opus",
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "xhigh"
+    }
+  },
+  "permissions": {
+    "defaultMode": "auto"
+  },
+  "skipAutoPermissionPrompt": true,
+  "skipDangerousModePermissionPrompt": true,
   "statusLine": {
     "type": "command",
     "command": "~/.claude/statusline-command.sh"
   },
-  "alwaysThinkingEnabled": false
+  "theme": "custom:rosepine",
+  "tui": "fullscreen"
 }

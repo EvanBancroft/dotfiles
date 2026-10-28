@@ -89,7 +89,7 @@ return {
 
 			local servers = {
 				gopls = {},
-				ts_ls = {},
+				tsgo = {},
 				ruby_lsp = {},
 				cssls = {
 					settings = {

@@ -10,6 +10,9 @@ input=$(cat)
 folder=$(basename "$(echo "$input" | jq -r '.workspace.current_dir')")
 model=$(echo "$input" | jq -r '.model.display_name')
 
+# Extract context window usage percentage
+context_used=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
+
 # Detect project type and language info
 lang_info=""
 
@@ -39,8 +42,14 @@ fi
 # Git branch
 branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo 'N/A')
 
+# Context window display
+context_display=""
+if [ -n "$context_used" ]; then
+    context_display=" | 🧠 $(printf "%.0f" "$context_used")% ctx"
+fi
+
 # Base status line with existing information
-base_status="📁 $folder${lang_info} | 🌿 $branch | 🤖 $model"
+base_status="📁 $folder${lang_info} | 🌿 $branch | 🤖 $model${context_display}"
 
 # Try to get ccusage information
 cost_info=""
@@ -62,10 +71,7 @@ if command -v bun >/dev/null 2>&1; then
         # Extract block cost (before "block")
         block_cost=$(echo "$ccusage_output" | grep -oE '\$[0-9]+\.[0-9]+ block' | sed 's/ block//')
 
-        # Extract time remaining (inside parentheses)
-        time_left=$(echo "$ccusage_output" | grep -oE '[0-9]+h [0-9]+m left')
-
-        # Get token data from ccusage blocks --active for session cost and time remaining
+        # Get token data from ccusage blocks --active for session cost
         blocks_json=$(bun x ccusage blocks --active --json 2>/dev/null)
         if [ -n "$blocks_json" ]; then
             # Get the actual session cost from JSON data
@@ -74,14 +80,6 @@ if command -v bun >/dev/null 2>&1; then
             # Override session cost with JSON data if available and more accurate
             if [ -n "$json_session_cost" ] && [ "$json_session_cost" != "null" ]; then
                 session_cost="\$$(printf "%.2f" "$json_session_cost")"
-            fi
-
-            # Get remaining minutes from projection
-            remaining_minutes=$(echo "$blocks_json" | jq -r '.blocks[0].projection.remainingMinutes // empty' 2>/dev/null)
-            if [ -n "$remaining_minutes" ] && [ "$remaining_minutes" != "null" ] && [ "$remaining_minutes" != "0" ]; then
-                hours=$((remaining_minutes / 60))
-                mins=$((remaining_minutes % 60))
-                time_left="${hours}h ${mins}m left"
             fi
         fi
 
@@ -98,10 +96,6 @@ if command -v bun >/dev/null 2>&1; then
 
         if [ -n "$daily_cost" ]; then
             cost_parts+=("💰 $daily_cost/day")
-        fi
-
-        if [ -n "$time_left" ]; then
-            cost_parts+=("⏱️ $time_left")
         fi
 
         # Join cost parts with " | "
